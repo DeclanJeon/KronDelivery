@@ -1,0 +1,69 @@
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = GROUP                               // Maven Group ID for the artifact
+version =buildVersionName()
+archivesBaseName = POM_ARTIFACT_ID
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            //noinspection GroovyAssignabilityCheck
+            project {
+                groupId GROUP
+                artifactId POM_ARTIFACT_ID
+                version project.version
+
+                name POM_NAME
+                packaging POM_PACKAGING
+                description POM_DESCRIPTION
+                url POM_URL
+
+                scm {
+                    url POM_SCM_URL
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                }
+
+                licenses {
+                    license {
+                        name POM_LICENCE_NAME
+                        url POM_LICENCE_URL
+                        distribution POM_LICENCE_DIST
+                    }
+                }
+
+                developers {
+                    developer {
+                        id POM_DEVELOPER_ID
+                        name POM_DEVELOPER_NAME
+                    }
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apiKey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = project.property("POM_ARTIFACT_ID")
+        desc = project.property("POM_DESCRIPTION")
+        websiteUrl = project.property("POM_URL")
+        vcsUrl = project.property("POM_SCM_CONNECTION")
+        licenses = ['Apache-2.0']
+        publish = false
+        version {
+            name = project.version
+            desc = project.property("POM_DESCRIPTION")
+            vcsTag = project.version
+        }
+    }
+}
